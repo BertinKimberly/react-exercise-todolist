@@ -1,0 +1,44 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.main-container{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(33, 32, 35);
+  flex-direction: column;
+  color: #fff;
+  overflow: hidden;
+}
+.completed{
+  text-decoration: line-through;
+  color: rgb(84, 144, 84);
+}
+.icon{
+  font-size: 14px;
+  margin: 5px;
+}
+.task{
+  width: 100vw;
+}
+.task-content{
+  color: black;
+  width: 80%;
+}
+input{
+  width: 80%;
+  height: 50px;
+  border-radius: 25px 0 0 25px;
+  padding-left: 50px;
+  font-size: 20px;
+}
+.add-btn{
+   width: 100px;
+   height: 50px;
+   border-radius: 0 25px 25px 0;
+   cursor: pointer;
+}

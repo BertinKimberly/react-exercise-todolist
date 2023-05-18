@@ -1,76 +1,73 @@
-import React, { useState, useRef, useEffect } from "react";
-import TodoList from "./TodoList";
-import { v4 as uuid } from "uuid";
+import React, { useState } from "react";
+import Task from "./components/Task";
 
-const LOCAL_STORAGE_KEY = "todoApp.todos";
+const App = () => {
+  const [tasks, setTasks] = useState([]);
+  const [taskInput, setTaskInput] = useState("");
 
-function App() {
-  const [todos, setTodos] = useState([]);
-  const todoNameRef = useRef();
+  const addTask = (e) => {
+    e.preventDefault();
+    const newTask = {
+      id: tasks.length === 0 ? 1 : tasks[tasks.length - 1].id + 1,
+      taskName: taskInput,
+      completed: false,
+    };
+    setTasks([...tasks, newTask]);
+    setTaskInput("");
+  };
 
-  useEffect(() => {
-    const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (storedTodos) setTodos(storedTodos);
-  }, []);
+  const handleInputChange = (e) => {
+    setTaskInput(e.target.value);
+  };
 
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
-  }, [todos]);
-
-  function toggleTodo(id) {
-    const newTodos = [...todos];
-    const todo = newTodos.find((todo) => todo.id === id);
-    todo.complete = !todo.complete;
-    setTodos(newTodos);
-  }
-
-  function handleAddTodo(e) {
-    const name = todoNameRef.current.value;
-    if (name === "") return;
-    setTodos((prevTodos) => {
-      return [...prevTodos, { id: uuid(), name: name, complete: false }];
-    });
-    todoNameRef.current.value = null;
-  }
-
-  function handleClearTodos() {
-    const newTodos = todos.filter((todo) => !todo.complete);
-    setTodos(newTodos);
-  }
-
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+  const completeTask = (id) => {
+    setTasks(
+      tasks.map((task) => {
+        if (task.id === id) {
+          return { ...task, completed: true };
+        } else {
+          return task;
+        }
+      })
+    );
+  };
   return (
-    <>
-      <div className="container-fluid d-flex bg-dark h-100% align-items-center justify-content-center">
-        <div className="container  m-3 bg-secondary d-flex flex-column align-items-center justify-content-center vh-100 ">
-          <input
-            className="w-50 p-2 m-3"
-            placeholder="Add Task "
-            ref={todoNameRef}
-            type="text"
-          />
-          <button
-            className="btn btn-outline-success m-3"
-            onClick={handleAddTodo}
-          >
-            Add Todo
-          </button>
-          <button
-            className="btn btn-outline-warning m-3"
-            onClick={handleClearTodos}
-          >
-            Clear Complete
-          </button>
-          <div className="fw-bold text-color-white">
-            {todos.filter((todo) => !todo.complete).length} left to do
+    <div className="main-container">
+      <h1 className="text-center m-5">Welcome , Bertin</h1>
+      <div className="container bg-secondary m-5 p-5">
+        <form onSubmit={addTask} className="w-100">
+          <div>
+            <input type="text" value={taskInput} onChange={handleInputChange} />
+            <button type="submit" className="add-btn">
+              Add a task
+            </button>
           </div>
-          <div className="bg-secondary  container d-flex flex-column justify-content-center">
-            <h1>My tasks today</h1>
-            <TodoList todos={todos} toggleTodo={toggleTodo} />
-          </div>
+        </form>
+      </div>
+      <div>
+        <h2>My tasks</h2>
+        <div className=" container">
+          {tasks.length !== 0 ? (
+            tasks.map((task) => (
+              <Task
+                taskName={task.taskName}
+                key={task.id}
+                id={task.id}
+                completed={task.completed}
+                completeTask={completeTask}
+                deleteTask={deleteTask}
+              />
+            ))
+          ) : (
+            <p className=" m-2">Empty...</p>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default App;
