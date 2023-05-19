@@ -4,9 +4,14 @@ import Task from "./components/Task";
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [taskInput, setTaskInput] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const addTask = (e) => {
     e.preventDefault();
+    if (taskInput.trim() === "") {
+      setErrorMessage("Please enter a task.");
+      return;
+    }
     const newTask = {
       id: tasks.length === 0 ? 1 : tasks[tasks.length - 1].id + 1,
       taskName: taskInput,
@@ -14,15 +19,18 @@ const App = () => {
     };
     setTasks([...tasks, newTask]);
     setTaskInput("");
+    setErrorMessage("");
   };
 
   const handleInputChange = (e) => {
     setTaskInput(e.target.value);
+    setErrorMessage("");
   };
 
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
+
   const completeTask = (id) => {
     setTasks(
       tasks.map((task) => {
@@ -34,22 +42,28 @@ const App = () => {
       })
     );
   };
+
+  //update task
+
+  
+
   return (
     <div className="main-container">
-      <h1 className="text-center m-5">Welcome , Bertin</h1>
+      <h1 className="text-center m-5">Welcome, Bertin</h1>
       <div className="container bg-secondary m-5 p-5">
         <form onSubmit={addTask} className="w-100">
-          <div>
-            <input type="text" value={taskInput} onChange={handleInputChange} />
+          <div className="input-container">
+            <input type="text" value={taskInput} onChange={handleInputChange} placeholder="task"/>
             <button type="submit" className="add-btn">
               Add a task
             </button>
           </div>
+          {errorMessage && <p className="text-danger">{errorMessage}</p>}
         </form>
       </div>
       <div>
         <h2>My tasks</h2>
-        <div className=" container">
+        <div className="container">
           {tasks.length !== 0 ? (
             tasks.map((task) => (
               <Task
@@ -62,7 +76,7 @@ const App = () => {
               />
             ))
           ) : (
-            <p className=" m-2">Empty...</p>
+            <p className="m-2">Empty...</p>
           )}
         </div>
       </div>
